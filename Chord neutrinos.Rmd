@@ -1,0 +1,147 @@
+---
+title: "Chord neutrinos"
+output: html_document
+date: "2026-03-15"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(chorddiag)
+
+# Definimos los nodos
+nodos <- c("Nu Electronico", "Nu Muonico", "Nu Esteril", 
+           "Cascadas (e-)", "Pistas (mu-)", "Missing Energy")
+
+# Matriz de adyacencia
+# Filas: Origen | Columnas: Destino
+m <- matrix(0, nrow = 6, ncol = 6)
+colnames(m) <- rownames(m) <- nodos
+
+# --- OSCILACIONES (Bidireccionales) ---
+m["Nu Muonico", "Nu Esteril"] <- 5   # Muon oscila a Esteril
+m["Nu Esteril", "Nu Muonico"] <- 5   # Esteril vuelve a Muon
+m["Nu Esteril", "Nu Electronico"] <- 2 # Puente hacia el exceso de electrones
+
+# --- DETECCIÓN EN LAR-TPC ---
+m["Nu Electronico", "Cascadas (e-)"] <- 40 # Interacción CC
+m["Nu Muonico", "Pistas (mu-)"] <- 60      # Interacción CC
+m["Nu Esteril", "Missing Energy"] <- 30    # El estéril se "pierde"
+
+# Colores: Neutrinos (Fríos) | Detección (Cálidos) | Estéril/Missing (Grises)
+colores <- c("#00E5FF", "#007BFF", "#9E9E9E", "#FF5252", "#FFD740", "#424242")
+
+chorddiag(m, 
+          type = "directional",
+          groupColors = colores,
+          groupnamePadding = 30,
+          margin = 120,
+          tooltipGroupConnector = " <-> ")
+```
+
+Estático para LArTPC
+```{r}
+library(circlize)
+
+# 1. Definimos la estructura de datos (formato lista de adyacencia)
+df <- data.frame(
+  from = c("Nu Muonico", "Nu Muonico", "Nu Muonico", "Nu Electronico", "Nu Esteril", "Nu Esteril"),
+  to   = c("Pistas (mu-)", "Actividad Nuclear", "Nu Esteril", "Cascadas (e-)", "E perdida", "Nu Electronico"),
+  value = c(50, 15, 8, 35, 20, 5)
+)
+
+# 2. Configuración estética
+colores <- c("Nu Muonico" = "#007BFF", "Nu Electronico" = "#00E5FF", "Nu Esteril" = "#9E9E9E",
+             "Pistas (mu-)" = "#FFD740", "Cascadas (e-)" = "#FF5252", 
+             "Actividad Nuclear" = "#4CAF50", "Missing Energy" = "#546E7A")
+
+# 3. Generar el gráfico
+# Ajustamos parámetros para que las etiquetas respiren
+circos.clear()
+circos.par(start.degree = 90, gap.degree = 4)
+
+chordDiagram(df, 
+             grid.col = colores,
+             transparency = 0.3,
+             directional = 1,
+             direction.type = c("diffHeight", "arrows"),
+             link.arr.type = "big.arrow",
+             annotationTrack = "grid", 
+             preAllocateTracks = list(track.height = 0.3))
+
+# 4. Añadir etiquetas manualmente para que no se solapen
+circos.track(track.index = 1, panel.fun = function(x, y) {
+  circos.text(CELL_META$xcenter, CELL_META$ylim[1], CELL_META$sector.index, 
+              facing = "clockwise", niceFacing = TRUE, adj = c(0, 0.5), cex = 1.2)
+}, bg.border = NA)
+
+```
+Interactivo para oscilaciones
+```{r}
+library(chorddiag)
+
+# Nombres científicos con notación clara
+nodos <- c("Neutrino Electronico (\u03bd\u2091)", "Neutrino Muonico (\u03bd\u03bc)",
+           "Neutrino Tauonico (\u03bd\u03c4)", "Neutrino Esteril (\u03bd\u1d62)")
+
+# Matriz de Mezcla (Probabilidades de oscilación relativas)
+# Basado en NuFIT 6.0 para distancias medias/largas
+m <- matrix(c(
+  68, 15, 15, 2,  # El e oscila un poco a todos, incluyendo el esteril
+  15, 42, 42, 1,   # El u oscila fuertemente con el t
+  15, 40, 40, 5,   # El t oscila fuertemente con el u
+  2, 1,  5,  92   # El esteril es mayormente autocontenido (difícil de salir)
+), byrow = TRUE, nrow = 4)
+
+colnames(m) <- rownames(m) <- nodos
+
+# Paleta de colores "Cyberpunk" (muy usada en visualización de física)
+colores <- c("#59F41E", "#3D56F4", "#002407", "#455A64")
+
+chart <- chorddiag(m, 
+          groupColors = colores,
+          groupnamePadding = 20,
+          groupnameFontsize = 16,
+          showTicks = TRUE,
+          margin = 120,
+          tooltipGroupConnector = " <-> ",
+          fadeLevel = 0.05)
+
+print(chart)
+```
+
+```{r}
+library(htmltools)
+# 5. Añadir Leyenda Profesional en HTML
+layout_final <- tags$div(
+  style = "display: flex; flex-direction: row; align-items: flex-start; 
+           font-family: sans-serif; background-color: white; padding: 10px; width: 900px;",
+  
+  # Lado Izquierdo: El Gráfico
+ 
+  
+  # Lado Derecho: La Leyenda
+  tags$div(
+    style = "flex: 1; margin-rigth: 5px; padding-top: 1px;",
+    tags$h2(style = "font-size: 20px; color: #333;", "Oscilación de neutrinos en el haz del experimento MicroBoone"),
+    tags$hr(),
+    tags$ul(
+      style = "list-style: none; padding: 0;",
+      tags$li(style="margin-bottom:10px;", tags$span(style=paste0("color:", colores[2]), "\u25cf"), tags$b(" \u03bd\u03bc (60%):"), " Haz dominante (Booster Neutrino Beam)"),
+      tags$li(style="margin-bottom:10px;", tags$span(style=paste0("color:", colores[1]), "\u25cf"), tags$b(" \u03bd\u2091 (25%):"), " Por contaminación u oscilación a corta distancia"),
+      tags$li(style="margin-bottom:10px;", tags$span(style=paste0("color:", colores[3]), "\u25cf"), tags$b(" \u03bd\u03c4 (10%):"), " Contaminación atmosférica."),
+      tags$li(style="margin-bottom:10px;", tags$span(style=paste0("color:", colores[4]), "\u25cf"), tags$b(" \u03bd\u1d62 (5%):"), " Estéril (hipotético)")
+    ),
+     tags$div(style = "flex: 2;", chart),
+    tags$br(),
+    tags$p(style="font-size: 12px; color: #666;", "Fuente: MicroBooNE Collaboration & NuFIT 6.1 (2025)")
+  )
+)
+
+# Renderizar
+html_print(layout_final)
+save_html(layout_final, "Neutrino_Chord_Diagram.html")
+
+```

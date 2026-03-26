@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<style>body{background-color:white;}</style>
+<link href="lib/htmltools-fill-0.5.9/fill.css" rel="stylesheet" />
+<script src="lib/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="lib/d3-4.13.0/d3.min.js"></script>
+<script src="lib/d3-tip-0.8.1/index.js"></script>
+<link href="lib/chorddiag-0.1.2.9000/chorddiag.css" rel="stylesheet" />
+<script src="lib/chorddiag-0.1.2.9000/chorddiag.js"></script>
+
+</head>
+<body>
+<div style="display: flex; flex-direction: row; align-items: flex-start; &#10;           font-family: sans-serif; background-color: white; padding: 10px; width: 900px;">
+  <div style="flex: 1; margin-rigth: 5px; padding-top: 1px;">
+    <h2 style="font-size: 20px; color: #333;">Oscilación de neutrinos en el haz del experimento MicroBoone</h2>
+    <hr/>
+    <ul style="list-style: none; padding: 0;">
+      <li style="margin-bottom:10px;">
+        <span style="color:#3D56F4">●</span>
+        <b> νμ (60%):</b>
+         Haz dominante (Booster Neutrino Beam)
+      </li>
+      <li style="margin-bottom:10px;">
+        <span style="color:#59F41E">●</span>
+        <b> νₑ (25%):</b>
+         Por contaminación u oscilación a corta distancia
+      </li>
+      <li style="margin-bottom:10px;">
+        <span style="color:#002407">●</span>
+        <b> ντ (10%):</b>
+         Contaminación atmosférica.
+      </li>
+      <li style="margin-bottom:10px;">
+        <span style="color:#455A64">●</span>
+        <b> νᵢ (5%):</b>
+         Estéril (hipotético)
+      </li>
+    </ul>
+    <div style="flex: 2;">
+      <div class="chorddiag html-widget html-fill-item" id="htmlwidget-ee96c797a35e8a70a9c9" style="width:960px;height:500px;"></div>
+      <script type="application/json" data-for="htmlwidget-ee96c797a35e8a70a9c9">{"x":{"matrix":[[68,15,15,2],[15,42,42,1],[15,40,40,5],[2,1,5,92]],"options":{"type":"directional","width":null,"height":null,"margin":120,"showGroupnames":true,"groupNames":["Neutrino Electronico (νₑ)","Neutrino Muonico (νμ)","Neutrino Tauonico (ντ)","Neutrino Esteril (νᵢ)"],"groupColors":["#59F41E","#3D56F4","#002407","#455A64"],"groupThickness":0.1,"groupPadding":0.03490658503988659,"groupnamePadding":[20,20,20,20],"groupnameFontsize":16,"groupedgeColor":null,"chordedgeColor":"#808080","categoryNames":null,"categorynamePadding":100,"categorynameFontsize":28,"showTicks":true,"tickInterval":1,"ticklabelFontsize":10,"fadeLevel":0.05,"showTooltips":true,"showZeroTooltips":true,"tooltipNames":["Neutrino Electronico (νₑ)","Neutrino Muonico (νμ)","Neutrino Tauonico (ντ)","Neutrino Esteril (νᵢ)"],"tooltipFontsize":12,"tooltipUnit":"","tooltipGroupConnector":" <-> ","precision":"null","clickAction":null,"clickGroupAction":null}},"evals":[],"jsHooks":[]}</script>
+    </div>
+    <br/>
+    <p style="font-size: 12px; color: #666;">Fuente: MicroBooNE Collaboration &amp; NuFIT 6.1 (2025)</p>
+  </div>
+</div>
+</body>
+</html>
